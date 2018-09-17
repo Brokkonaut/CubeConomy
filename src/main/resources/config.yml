@@ -1,0 +1,10 @@
+database:
+  host: localhost
+  user: CHANGETHIS
+  password: CHANGETHIS
+  database: CHANGETHIS
+  tableprefix: cubeconomy
+initialMoney: 5000
+name: 'Cube'
+nameplural: 'Cubes'
+bungeeBroadcast: false
