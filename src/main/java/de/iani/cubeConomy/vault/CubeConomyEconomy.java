@@ -4,15 +4,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-import net.milkbowl.vault.economy.Economy;
-import net.milkbowl.vault.economy.EconomyResponse;
-import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
-
 import org.bukkit.OfflinePlayer;
 
 import de.iani.cubeConomy.CubeConomyAPI;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.MoneyException;
+import net.milkbowl.vault.economy.Economy;
+import net.milkbowl.vault.economy.EconomyResponse;
+import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
 public class CubeConomyEconomy implements Economy {
     private CubeConomyAPI cubeConomy;
@@ -307,6 +306,6 @@ public class CubeConomyEconomy implements Economy {
 
     @Override
     public List<String> getBanks() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
 }
