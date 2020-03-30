@@ -84,7 +84,7 @@ public class CubeConomyEconomy implements Economy {
 
     public EconomyResponse depositPlayer(UUID playerUUID, double amount) {
         if (amount < 0) {
-            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot desposit negative funds");
+            return new EconomyResponse(0, 0, ResponseType.FAILURE, "Cannot deposit negative funds");
         }
         if (playerUUID == null) {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, "Invalid player");
