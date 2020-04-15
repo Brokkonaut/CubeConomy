@@ -1,6 +1,6 @@
 package de.iani.cubeConomy.events;
 
-import org.bukkit.OfflinePlayer;
+import de.iani.playerUUIDCache.CachedPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -10,11 +10,11 @@ public class MoneyPayEvent extends Event {
     private static final HandlerList handlers = new HandlerList();
 
     private Player from;
-    private OfflinePlayer to;
+    private CachedPlayer to;
     private double amount;
     private long timestamp;
 
-    public MoneyPayEvent(Player from, OfflinePlayer to, double amount, long timestamp) {
+    public MoneyPayEvent(Player from, CachedPlayer to, double amount, long timestamp) {
         this.from = from;
         this.to = to;
         this.amount = amount;
@@ -25,7 +25,7 @@ public class MoneyPayEvent extends Event {
         return from;
     }
 
-    public OfflinePlayer getTo() {
+    public CachedPlayer getTo() {
         return to;
     }
 

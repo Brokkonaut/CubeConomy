@@ -2,6 +2,8 @@ package de.iani.cubeConomy.commands.money;
 
 import java.util.ArrayList;
 
+import de.iani.cubeConomy.events.MoneyChangeEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -54,6 +56,8 @@ public class MoneyGiveCommand extends SubCommand {
 
         try {
             plugin.changeMoney(player.getUUID(), amount);
+            Bukkit.getPluginManager().callEvent(new MoneyChangeEvent(player.getUniqueId(), amount, System.currentTimeMillis()));
+
             plugin.getLogger().info(sender.getName() + " has given " + plugin.formatMoney(amount) + " to " + player.getName());
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + player.getName() + "'s account had " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + " credited.");
 

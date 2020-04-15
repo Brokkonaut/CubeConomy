@@ -5,7 +5,6 @@ import java.text.DecimalFormat;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import de.iani.cubeConomy.events.MoneyChangeEvent;
 import de.iani.cubeConomy.events.MoneyPayEvent;
 import net.milkbowl.vault.economy.Economy;
 
@@ -167,7 +166,6 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
         }
         try {
             double value = database.changeMoney(player, deltaMoney, config.getDefaultMoney());
-            Bukkit.getPluginManager().callEvent(new MoneyChangeEvent(player, deltaMoney, System.currentTimeMillis()));
             return value;
         } catch (SQLException e) {
             throw new MoneyDatabaseException("Could not query database", e);
@@ -187,7 +185,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
             if (!result.isSuccess()) {
                 throw new MoneyException("Insufficient funds");
             }
-            Bukkit.getPluginManager().callEvent(new MoneyPayEvent(Bukkit.getPlayer(fromPlayer), Bukkit.getOfflinePlayer(toPlayer), amount, System.currentTimeMillis()));
+            Bukkit.getPluginManager().callEvent(new MoneyPayEvent(Bukkit.getPlayer(fromPlayer), playerUUIDCache.getPlayer(toPlayer), amount, System.currentTimeMillis()));
             return result.getNewAmount();
         } catch (SQLException e) {
             throw new MoneyDatabaseException("Could not query database", e);
