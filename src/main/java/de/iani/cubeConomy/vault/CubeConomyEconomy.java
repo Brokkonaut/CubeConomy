@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import de.iani.cubeConomy.events.UnknownTransactionEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import de.iani.cubeConomy.CubeConomyAPI;
@@ -91,6 +93,7 @@ public class CubeConomyEconomy implements Economy {
         }
         try {
             double newAmount = cubeConomy.changeMoney(playerUUID, amount);
+            Bukkit.getPluginManager().callEvent(new UnknownTransactionEvent(System.currentTimeMillis(), playerUUID, amount));
             return new EconomyResponse(amount, newAmount, ResponseType.SUCCESS, null);
         } catch (MoneyDatabaseException e) {
             return new EconomyResponse(0, 0, ResponseType.FAILURE, e.getMessage());
@@ -106,6 +109,7 @@ public class CubeConomyEconomy implements Economy {
         }
         try {
             double newMoney = cubeConomy.withdrawMoney(playerUUID, amount);
+            Bukkit.getPluginManager().callEvent(new UnknownTransactionEvent(System.currentTimeMillis(), playerUUID, - amount));
             return new EconomyResponse(amount, newMoney, ResponseType.SUCCESS, null);
         } catch (MoneyException e) {
             return new EconomyResponse(0, getBalance(playerUUID), ResponseType.FAILURE, e.getMessage());
