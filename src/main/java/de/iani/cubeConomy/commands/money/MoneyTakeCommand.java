@@ -1,18 +1,17 @@
 package de.iani.cubeConomy.commands.money;
 
-import java.util.ArrayList;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import de.iani.cubeConomy.CubeConomy;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.Permissions;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
+import de.iani.cubeConomy.events.Cause;
 import de.iani.playerUUIDCache.CachedPlayer;
+import java.util.ArrayList;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class MoneyTakeCommand extends SubCommand {
     private CubeConomy plugin;
@@ -53,7 +52,7 @@ public class MoneyTakeCommand extends SubCommand {
         }
 
         try {
-            plugin.changeMoney(player.getUUID(), -amount);
+            plugin.changeMoney(sender, player.getUUID(), -amount, Cause.TAKE_COMMAND);
             plugin.getLogger().info(sender.getName() + " has taken " + plugin.formatMoney(amount) + " from " + player.getName());
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + player.getName() + "'s account had " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.RED + " debited.");
 

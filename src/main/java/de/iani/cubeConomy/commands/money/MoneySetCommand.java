@@ -1,18 +1,17 @@
 package de.iani.cubeConomy.commands.money;
 
-import java.util.ArrayList;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import de.iani.cubeConomy.CubeConomy;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.Permissions;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
+import de.iani.cubeConomy.events.Cause;
 import de.iani.playerUUIDCache.CachedPlayer;
+import java.util.ArrayList;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class MoneySetCommand extends SubCommand {
     private CubeConomy plugin;
@@ -54,7 +53,7 @@ public class MoneySetCommand extends SubCommand {
 
         try {
             double oldamount = plugin.getMoney(player.getUUID());
-            plugin.setMoney(player.getUUID(), amount);
+            plugin.setMoney(sender, player.getUUID(), amount, Cause.SET_COMMAND);
             plugin.getLogger().info(sender.getName() + " has set the money for " + player.getName() + " to " + plugin.formatMoney(amount) + ". Old amount: " + plugin.formatMoney(oldamount));
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + player.getName() + "'s balance has been changed to: " + ChatColor.WHITE + plugin.formatMoney(amount));
 

@@ -1,18 +1,17 @@
 package de.iani.cubeConomy.commands.money;
 
-import java.util.ArrayList;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import de.iani.cubeConomy.CubeConomy;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.MoneyException;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
+import de.iani.cubeConomy.events.Cause;
 import de.iani.playerUUIDCache.CachedPlayer;
+import java.util.ArrayList;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class MoneyPayCommand extends SubCommand {
     private CubeConomy plugin;
@@ -58,7 +57,7 @@ public class MoneyPayCommand extends SubCommand {
         }
 
         try {
-            plugin.transferMoney(senderPlayer.getUniqueId(), player.getUUID(), amount);
+            plugin.transferMoney(sender, senderPlayer.getUniqueId(), player.getUUID(), amount, Cause.PAY_COMMAND);
             plugin.getLogger().info(sender.getName() + " has sent " + plugin.formatMoney(amount) + " to " + player.getName());
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + "You have sent " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + " to " + ChatColor.WHITE + player.getName() + ChatColor.DARK_GREEN + ".");
             plugin.sendMessageTo(senderPlayer, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has sent to you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + ".");

@@ -1,5 +1,10 @@
 package de.iani.cubeConomy.data;
 
+import de.iani.cubeConomy.util.sql.MySQLConnection;
+import de.iani.cubeConomy.util.sql.SQLConnection;
+import de.iani.cubeConomy.util.sql.SQLRunnable;
+import de.iani.playerUUIDCache.CachedPlayer;
+import de.iani.playerUUIDCache.PlayerUUIDCache;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,14 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
-
 import org.bukkit.command.CommandSender;
-
-import de.iani.cubeConomy.util.sql.MySQLConnection;
-import de.iani.cubeConomy.util.sql.SQLConnection;
-import de.iani.cubeConomy.util.sql.SQLRunnable;
-import de.iani.playerUUIDCache.CachedPlayer;
-import de.iani.playerUUIDCache.PlayerUUIDCache;
 
 public class CubeConomyDatabase {
     private SQLConnection connection;
@@ -99,16 +97,26 @@ public class CubeConomyDatabase {
         });
     }
 
-    public void setMoney(final UUID player, final double money) throws SQLException {
-        this.connection.runCommands(new SQLRunnable<Void>() {
+    public double setMoney(final UUID player, final double money, final double initialMoney) throws SQLException {
+        return this.connection.runCommands(new SQLRunnable<Double>() {
             @Override
-            public Void execute(Connection connection, SQLConnection sqlConnection) throws SQLException {
-                PreparedStatement smt = sqlConnection.getOrCreateStatement(setMoney);
+            public Double execute(Connection connection, SQLConnection sqlConnection) throws SQLException {
+                PreparedStatement smt = sqlConnection.getOrCreateStatement(getMoney);
+                smt.setString(1, player.toString());
+                ResultSet results = smt.executeQuery();
+                double value = initialMoney;
+                if (results.next()) {
+                    value = results.getDouble("money");
+                }
+                results.close();
+
+                smt = sqlConnection.getOrCreateStatement(setMoney);
                 smt.setString(1, player.toString());
                 smt.setDouble(2, money);
                 smt.setDouble(3, money);
                 smt.executeUpdate();
-                return null;
+
+                return money - value;
             }
         });
     }

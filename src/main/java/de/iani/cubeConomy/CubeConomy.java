@@ -1,17 +1,5 @@
 package de.iani.cubeConomy;
 
-import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.util.UUID;
-import java.util.logging.Level;
-
-import net.milkbowl.vault.economy.Economy;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.ServicePriority;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import de.iani.cubeConomy.commands.CommandRouter;
 import de.iani.cubeConomy.commands.money.MoneyCommand;
 import de.iani.cubeConomy.commands.money.MoneyGiveCommand;
@@ -24,9 +12,22 @@ import de.iani.cubeConomy.commands.money.MoneyTopCommand;
 import de.iani.cubeConomy.data.CubeConomyConfig;
 import de.iani.cubeConomy.data.CubeConomyDatabase;
 import de.iani.cubeConomy.data.CubeConomyDatabase.MoneyAndSuccess;
+import de.iani.cubeConomy.events.Cause;
+import de.iani.cubeConomy.events.MoneyChangedEvent;
+import de.iani.cubeConomy.events.MoneyTransferedEvent;
 import de.iani.cubeConomy.vault.CubeConomyEconomy;
 import de.iani.playerUUIDCache.CachedPlayer;
 import de.iani.playerUUIDCache.PlayerUUIDCache;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.UUID;
+import java.util.logging.Level;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.ServicePriority;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
     private PlayerUUIDCache playerUUIDCache;
@@ -76,6 +77,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
         }
     }
 
+    @Override
     public void onDisable() {
         if (database != null) {
             database.disconnect();
@@ -111,6 +113,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
         return config.getCurrencyNamePlural();
     }
 
+    @Override
     public String formatMoney(double amount) {
         String formated = moneyFormat.format(amount);
         if (amount == 1) {
@@ -146,11 +149,16 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public void setMoney(UUID player, double money) throws MoneyDatabaseException {
+        setMoney(null, player, money, Cause.PLUGIN);
+    }
+
+    public void setMoney(CommandSender actor, UUID player, double money, Cause cause) throws MoneyDatabaseException {
         if (player == null) {
             throw new NullPointerException("player is null");
         }
         try {
-            database.setMoney(player, money);
+            double delta = database.setMoney(player, money, config.getDefaultMoney());
+            new MoneyChangedEvent(actor, delta, player, cause).call();
             return;
         } catch (SQLException e) {
             throw new MoneyDatabaseException("Could not query database", e);
@@ -159,11 +167,17 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public double changeMoney(UUID player, double deltaMoney) throws MoneyDatabaseException {
+        return changeMoney(null, player, deltaMoney, Cause.PLUGIN);
+    }
+
+    public double changeMoney(CommandSender actor, UUID player, double deltaMoney, Cause cause) throws MoneyDatabaseException {
         if (player == null) {
             throw new NullPointerException("player is null");
         }
         try {
-            return database.changeMoney(player, deltaMoney, config.getDefaultMoney());
+            double result = database.changeMoney(player, deltaMoney, config.getDefaultMoney());
+            new MoneyChangedEvent(actor, deltaMoney, player, cause).call();
+            return result;
         } catch (SQLException e) {
             throw new MoneyDatabaseException("Could not query database", e);
         }
@@ -171,6 +185,10 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public double transferMoney(UUID fromPlayer, UUID toPlayer, double amount) throws MoneyException, MoneyDatabaseException {
+        return transferMoney(null, fromPlayer, toPlayer, amount, Cause.PLUGIN);
+    }
+
+    public double transferMoney(CommandSender actor, UUID fromPlayer, UUID toPlayer, double amount, Cause cause) throws MoneyException, MoneyDatabaseException {
         if (fromPlayer == null) {
             throw new NullPointerException("fromPlayer is null");
         }
@@ -182,6 +200,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
             if (!result.isSuccess()) {
                 throw new MoneyException("Insufficient funds");
             }
+            new MoneyTransferedEvent(actor, amount, fromPlayer, toPlayer, cause).call();
             return result.getNewAmount();
         } catch (SQLException e) {
             throw new MoneyDatabaseException("Could not query database", e);
@@ -190,6 +209,10 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public double withdrawMoney(UUID player, double withdrawMoney) throws MoneyException, MoneyDatabaseException {
+        return withdrawMoney(null, player, withdrawMoney, Cause.PLUGIN);
+    }
+
+    public double withdrawMoney(CommandSender actor, UUID player, double withdrawMoney, Cause cause) throws MoneyException, MoneyDatabaseException {
         if (player == null) {
             throw new NullPointerException("player is null");
         }
@@ -198,6 +221,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
             if (!result.isSuccess()) {
                 throw new MoneyException("Insufficient funds");
             }
+            new MoneyChangedEvent(actor, -withdrawMoney, player, cause).call();
             return result.getNewAmount();
         } catch (SQLException e) {
             throw new MoneyDatabaseException("Could not query database", e);
