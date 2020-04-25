@@ -39,8 +39,8 @@ public class MoneyPayCommand extends SubCommand {
             return true;
         }
         double amount = args.getNext(0.0);
-        if (Double.isInfinite(amount) || Double.isNaN(amount) || amount <= 0) {
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Invalid amount");
+        if (!Double.isFinite(amount) || amount < 0.01) {
+            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Amount must be positive");
             return true;
         }
 
