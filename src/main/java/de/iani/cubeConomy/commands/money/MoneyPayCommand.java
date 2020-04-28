@@ -39,7 +39,7 @@ public class MoneyPayCommand extends SubCommand {
             return true;
         }
         double amount = args.getNext(0.0);
-        amount = ((long) (amount * 100)) / 100.0;
+        amount = (Math.round(amount * 100)) / 100.0;
         if (!Double.isFinite(amount) || amount < 0.01) {
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Amount must be positive");
             return true;
