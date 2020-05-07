@@ -22,7 +22,7 @@ public class MoneyPayCommand extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "<name> <amount>";
+        return "<name> <amount> [reason]";
     }
 
     @Override
@@ -56,11 +56,17 @@ public class MoneyPayCommand extends SubCommand {
             return true;
         }
 
+        StringBuilder reason = new StringBuilder(args.getNext(""));
+        while (args.hasNext()) {
+            reason.append(' ').append(args.getNext(""));
+        }
+
         try {
-            plugin.transferMoney(sender, senderPlayer.getUniqueId(), player.getUUID(), amount, Cause.PAY_COMMAND);
-            plugin.getLogger().info(sender.getName() + " has sent " + plugin.formatMoney(amount) + " to " + player.getName());
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + "You have sent " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + " to " + ChatColor.WHITE + player.getName() + ChatColor.DARK_GREEN + ".");
-            plugin.sendMessageTo(senderPlayer, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has sent to you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + ".");
+            String reasonMessage = reason.toString().equals("") ? "" : " for " + ChatColor.WHITE + reason + ChatColor.DARK_GREEN;
+            plugin.transferMoney(sender, senderPlayer.getUniqueId(), player.getUUID(), amount, Cause.PAY_COMMAND, reason.toString());
+            plugin.getLogger().info(sender.getName() + " has sent " + plugin.formatMoney(amount) + " to " + player.getName() + (reason.toString().equals("") ? "" : " with reason \"" + reason + "\""));
+            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + "You have sent " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + " to " + ChatColor.WHITE + player.getName() + ChatColor.DARK_GREEN + reasonMessage + ".");
+            plugin.sendMessageTo(senderPlayer, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has sent to you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + reasonMessage + ".");
         } catch (MoneyDatabaseException e) {
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Database error: " + e.getMessage());
         } catch (MoneyException e) {

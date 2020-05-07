@@ -10,8 +10,8 @@ public class MoneyTransferedEvent extends MoneyEvent {
 
     private static final HandlerList handlers = new HandlerList();
 
-    public MoneyTransferedEvent(CommandSender actor, double amount, UUID source, UUID target, Cause cause) {
-        super(actor, amount, target, cause);
+    public MoneyTransferedEvent(CommandSender actor, double amount, UUID source, UUID target, Cause cause, String reason) {
+        super(actor, amount, target, cause, reason);
         this.source = source;
     }
 

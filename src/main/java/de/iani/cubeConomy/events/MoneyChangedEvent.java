@@ -8,8 +8,8 @@ import org.bukkit.event.HandlerList;
 public class MoneyChangedEvent extends MoneyEvent {
     private static final HandlerList handlers = new HandlerList();
 
-    public MoneyChangedEvent(CommandSender actor, double amount, UUID target, Cause cause) {
-        super(actor, amount, target, cause);
+    public MoneyChangedEvent(CommandSender actor, double amount, UUID target, Cause cause, String reason) {
+        super(actor, amount, target, cause, reason);
     }
 
     @Override

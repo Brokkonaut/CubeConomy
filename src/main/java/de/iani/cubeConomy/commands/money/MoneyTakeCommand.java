@@ -27,7 +27,7 @@ public class MoneyTakeCommand extends SubCommand {
 
     @Override
     public String getUsage() {
-        return "<name> <amount>";
+        return "<name> <amount> [reason]";
     }
 
     @Override
@@ -51,13 +51,19 @@ public class MoneyTakeCommand extends SubCommand {
             return true;
         }
 
+        StringBuilder reason = new StringBuilder(args.getNext(""));
+        while (args.hasNext()) {
+            reason.append(' ').append(args.getNext(""));
+        }
+
         try {
-            plugin.changeMoney(sender, player.getUUID(), -amount, Cause.TAKE_COMMAND);
-            plugin.getLogger().info(sender.getName() + " has taken " + plugin.formatMoney(amount) + " from " + player.getName());
+            plugin.changeMoney(sender, player.getUUID(), -amount, Cause.TAKE_COMMAND, reason.toString());
+            plugin.getLogger().info(sender.getName() + " has taken " + plugin.formatMoney(amount) + " from " + player.getName() + (reason.toString().equals("") ? "" : " with reason \"" + reason + "\""));
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + player.getName() + "'s account had " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.RED + " debited.");
 
             if (sender instanceof Player) {
-                plugin.sendMessageTo((Player) sender, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has taken from you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + ".");
+                String reasonMessage = reason.toString().equals("") ? "" : " for " + ChatColor.WHITE + reason + ChatColor.DARK_GREEN;
+                plugin.sendMessageTo((Player) sender, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has taken from you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + reasonMessage + ".");
             }
         } catch (MoneyDatabaseException e) {
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Database error: " + e.getMessage());
