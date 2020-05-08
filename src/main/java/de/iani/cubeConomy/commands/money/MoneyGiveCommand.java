@@ -51,17 +51,14 @@ public class MoneyGiveCommand extends SubCommand {
             return true;
         }
 
-        StringBuilder reason = new StringBuilder(args.getNext(""));
-        while (args.hasNext()) {
-            reason.append(' ').append(args.getNext(""));
-        }
+        String reason = args.getAll(null);
 
         try {
-            String reasonMessage = reason.toString().equals("") ? "" : " for " + ChatColor.WHITE + reason + ChatColor.DARK_GREEN;
-            plugin.changeMoney(sender, player.getUUID(), amount, Cause.GIVE_COMMAND, reason.toString());
-            plugin.getLogger().info(sender.getName() + " has given " + plugin.formatMoney(amount) + " to " + player.getName() + (reason.toString().equals("") ? "" : " with reason \"" + reason + "\""));
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + player.getName() + "'s account had " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + " credited.");
+            plugin.changeMoney(sender, player.getUUID(), amount, Cause.GIVE_COMMAND, reason);
+            plugin.getLogger().info(sender.getName() + " has given " + plugin.formatMoney(amount) + " to " + player.getName() + (reason == null ? "" : " with reason \"" + reason + "\""));
 
+            String reasonMessage = reason == null ? "" : " for " + ChatColor.WHITE + reason + ChatColor.DARK_GREEN;
+            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + player.getName() + "'s account had " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + " credited" + reasonMessage + ".");
             if (sender instanceof Player) {
                 plugin.sendMessageTo((Player) sender, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has given to you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + reasonMessage + ".");
             }

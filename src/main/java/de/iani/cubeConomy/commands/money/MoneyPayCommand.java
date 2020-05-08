@@ -57,15 +57,13 @@ public class MoneyPayCommand extends SubCommand {
             return true;
         }
 
-        StringBuilder reason = new StringBuilder(args.getNext(""));
-        while (args.hasNext()) {
-            reason.append(' ').append(args.getNext(""));
-        }
+        String reason = args.getAll(null);
 
         try {
-            String reasonMessage = reason.toString().equals("") ? "" : " for " + ChatColor.WHITE + reason + ChatColor.DARK_GREEN;
-            plugin.transferMoney(sender, senderPlayer.getUniqueId(), player.getUUID(), amount, Cause.PAY_COMMAND, reason.toString());
-            plugin.getLogger().info(sender.getName() + " has sent " + plugin.formatMoney(amount) + " to " + player.getName() + (reason.toString().equals("") ? "" : " with reason \"" + reason + "\""));
+            plugin.transferMoney(sender, senderPlayer.getUniqueId(), player.getUUID(), amount, Cause.PAY_COMMAND, reason);
+            plugin.getLogger().info(sender.getName() + " has sent " + plugin.formatMoney(amount) + " to " + player.getName() + (reason == null ? "" : " with reason \"" + reason + "\""));
+
+            String reasonMessage = reason == null ? "" : " for " + ChatColor.WHITE + reason + ChatColor.DARK_GREEN;
             sender.sendMessage(CubeConomy.MESSAGE_PREFIX + "You have sent " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + " to " + ChatColor.WHITE + player.getName() + ChatColor.DARK_GREEN + reasonMessage + ".");
             plugin.sendMessageTo(senderPlayer, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has sent to you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + reasonMessage + ".");
         } catch (MoneyDatabaseException e) {

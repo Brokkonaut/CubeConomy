@@ -149,7 +149,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public void setMoney(UUID player, double money) throws MoneyDatabaseException {
-        setMoney(null, player, money, Cause.PLUGIN, "");
+        setMoney(null, player, money, Cause.PLUGIN, null);
     }
 
     public void setMoney(CommandSender actor, UUID player, double money, Cause cause, String reason) throws MoneyDatabaseException {
@@ -167,7 +167,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public double changeMoney(UUID player, double deltaMoney) throws MoneyDatabaseException {
-        return changeMoney(null, player, deltaMoney, Cause.PLUGIN, "");
+        return changeMoney(null, player, deltaMoney, Cause.PLUGIN, null);
     }
 
     public double changeMoney(CommandSender actor, UUID player, double deltaMoney, Cause cause, String reason) throws MoneyDatabaseException {
@@ -185,7 +185,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public double transferMoney(UUID fromPlayer, UUID toPlayer, double amount) throws MoneyException, MoneyDatabaseException {
-        return transferMoney(null, fromPlayer, toPlayer, amount, Cause.PLUGIN, "");
+        return transferMoney(null, fromPlayer, toPlayer, amount, Cause.PLUGIN, null);
     }
 
     public double transferMoney(CommandSender actor, UUID fromPlayer, UUID toPlayer, double amount, Cause cause, String reason) throws MoneyException, MoneyDatabaseException {
@@ -209,7 +209,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
     @Override
     public double withdrawMoney(UUID player, double withdrawMoney) throws MoneyException, MoneyDatabaseException {
-        return withdrawMoney(null, player, withdrawMoney, Cause.PLUGIN, "");
+        return withdrawMoney(null, player, withdrawMoney, Cause.PLUGIN, null);
     }
 
     public double withdrawMoney(CommandSender actor, UUID player, double withdrawMoney, Cause cause, String reason) throws MoneyException, MoneyDatabaseException {
