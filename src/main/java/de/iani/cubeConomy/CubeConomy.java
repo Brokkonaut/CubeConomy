@@ -18,6 +18,7 @@ import de.iani.cubeConomy.events.MoneyTransferedEvent;
 import de.iani.cubeConomy.vault.CubeConomyEconomy;
 import de.iani.playerUUIDCache.CachedPlayer;
 import de.iani.playerUUIDCache.PlayerUUIDCache;
+import java.math.RoundingMode;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.UUID;
@@ -50,6 +51,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
             return;
         }
         this.moneyFormat = new DecimalFormat("###,##0.00");
+        moneyFormat.setRoundingMode(RoundingMode.FLOOR);
 
         CommandRouter moneyCommand = new CommandRouter(getCommand("money"));
         moneyCommand.addCommandMapping(new MoneyCommand(this));
