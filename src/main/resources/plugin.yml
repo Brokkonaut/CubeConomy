@@ -5,7 +5,7 @@ description: CubeConomy
 authors:
   - Brokkonaut
 # depend: [PlayerUUIDCache]
-# loadbefore: [Vault]
+loadbefore: [Vault, PlayerUUIDCache]
 load: startup
 api-version: 1.13
 
