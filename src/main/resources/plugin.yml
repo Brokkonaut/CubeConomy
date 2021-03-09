@@ -4,9 +4,8 @@ version: 1.1.0
 description: CubeConomy
 authors:
   - Brokkonaut
-# depend: [PlayerUUIDCache]
-loadbefore: [Vault, PlayerUUIDCache]
-load: startup
+depend: [PlayerUUIDCache]
+softdepend: [Vault]
 api-version: 1.13
 
 commands:

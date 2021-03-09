@@ -40,7 +40,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
     public static final String MESSAGE_PREFIX = ChatColor.DARK_GREEN + "[" + ChatColor.WHITE + "Money" + ChatColor.DARK_GREEN + "] ";
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         playerUUIDCache = (PlayerUUIDCache) getServer().getPluginManager().getPlugin("PlayerUUIDCache");
         config = new CubeConomyConfig(this);
         try {
@@ -53,6 +53,15 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
         this.moneyFormat = new DecimalFormat("###,##0.00");
         moneyFormat.setRoundingMode(RoundingMode.FLOOR);
 
+        if (getServer().getPluginManager().getPlugin("Vault") != null) {
+            getServer().getServicesManager().register(Economy.class, new CubeConomyEconomy(this), this, ServicePriority.Highest);
+            getLogger().info("Registered into Vault!");
+        }
+
+    }
+
+    @Override
+    public void onEnable() {
         CommandRouter moneyCommand = new CommandRouter(getCommand("money"));
         moneyCommand.addCommandMapping(new MoneyCommand(this));
 
@@ -68,11 +77,6 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
 
         CommandRouter payCommand = new CommandRouter(getCommand("pay"));
         payCommand.addCommandMapping(new MoneyPayCommand(this));
-
-        if (getServer().getPluginManager().getPlugin("Vault") != null) {
-            getServer().getServicesManager().register(Economy.class, new CubeConomyEconomy(this), this, ServicePriority.Highest);
-            getLogger().info("Registered into Vault!");
-        }
 
         if (config.bungeeBroadcast()) {
             broadcaster = new BungeeBroadcast(this);
