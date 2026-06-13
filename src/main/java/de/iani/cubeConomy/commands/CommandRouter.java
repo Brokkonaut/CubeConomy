@@ -7,7 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -173,13 +174,13 @@ public class CommandRouter implements CommandExecutor, TabCompleter {
                         if (toExecute.getRequiredPermission() == null || sender.hasPermission(toExecute.getRequiredPermission())) {
                             return toExecute.onCommand(sender, command, alias, getCommandString(alias, currentMap), new ArgsParser(args, nr));
                         } else {
-                            sender.sendMessage(ChatColor.RED + "No permission!");
+                            sender.sendMessage(Component.text("No permission!", NamedTextColor.RED));
                         }
                     } else {
-                        sender.sendMessage(ChatColor.RED + "This command can only be executed by players!");
+                        sender.sendMessage(Component.text("This command can only be executed by players!", NamedTextColor.RED));
                     }
                 } else {
-                    sender.sendMessage(ChatColor.RED + "This command is not allowed for CommandBlocks!");
+                    sender.sendMessage(Component.text("This command is not allowed for CommandBlocks!", NamedTextColor.RED));
                 }
             }
             // show valid cmds
@@ -211,12 +212,12 @@ public class CommandRouter implements CommandExecutor, TabCompleter {
                 String key = subcmd.name;
                 if (subcmd.executor == null) {
                     // hat weitere subcommands
-                    sender.sendMessage(prefix + key + " ...");
+                    sender.sendMessage(Component.text(prefix + key + " ..."));
                 } else {
                     if (subcmd.executor.getRequiredPermission() == null || sender.hasPermission(subcmd.executor.getRequiredPermission())) {
                         if (sender instanceof Player || !subcmd.executor.requiresPlayer()) {
 
-                            sender.sendMessage(prefix + key + " " + subcmd.executor.getUsage());
+                            sender.sendMessage(Component.text(prefix + key + " " + subcmd.executor.getUsage()));
                         }
                     }
                 }

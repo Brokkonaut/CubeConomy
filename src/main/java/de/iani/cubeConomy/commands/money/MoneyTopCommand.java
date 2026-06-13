@@ -6,11 +6,13 @@ import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 import de.iani.cubeConomy.CubeConomy;
+import de.iani.cubeConomy.Messages;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
 import de.iani.playerUUIDCache.CachedPlayer;
@@ -38,15 +40,19 @@ public class MoneyTopCommand extends SubCommand {
         try {
             accounts = plugin.getPluginDatabase().listTop(0, count);
         } catch (SQLException e1) {
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Database error");
+            sender.sendMessage(Messages.error("Database error"));
             return true;
         }
-        sender.sendMessage(ChatColor.DARK_GREEN + "-----[ " + ChatColor.WHITE + "Wealthiest Accounts " + ChatColor.DARK_GREEN + "]-----");
+        sender.sendMessage(Component.text("-----[ ", NamedTextColor.DARK_GREEN)
+                .append(Component.text("Wealthiest Accounts ", NamedTextColor.WHITE))
+                .append(Component.text("]-----", NamedTextColor.DARK_GREEN)));
         int nr = 1;
         for (Entry<UUID, Double> e : accounts.entrySet()) {
             CachedPlayer p = plugin.getPlayerUUIDCache().getPlayer(e.getKey(), true);
-            sender.sendMessage(ChatColor.DARK_GRAY.toString() + (nr++) + ". " + ChatColor.DARK_GREEN + (p != null ? p.getName() : e.getKey()) + ChatColor.DARK_GRAY + " - " + ChatColor.WHITE
-                    + plugin.formatMoney(e.getValue()));
+            sender.sendMessage(Component.text((nr++) + ". ", NamedTextColor.DARK_GRAY)
+                    .append(Component.text(String.valueOf(p != null ? p.getName() : e.getKey()), NamedTextColor.DARK_GREEN))
+                    .append(Component.text(" - ", NamedTextColor.DARK_GRAY))
+                    .append(Component.text(plugin.formatMoney(e.getValue()), NamedTextColor.WHITE)));
         }
 
         return true;

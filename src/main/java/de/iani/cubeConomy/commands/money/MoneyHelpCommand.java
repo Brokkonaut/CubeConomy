@@ -1,15 +1,14 @@
 package de.iani.cubeConomy.commands.money;
 
-import java.util.ArrayList;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-
 import de.iani.cubeConomy.CubeConomy;
 import de.iani.cubeConomy.Permissions;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
+import java.util.ArrayList;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 public class MoneyHelpCommand extends SubCommand {
     private CubeConomy plugin;
@@ -20,19 +19,25 @@ public class MoneyHelpCommand extends SubCommand {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String alias, String commandString, ArgsParser args) {
-        sender.sendMessage("");
-        sender.sendMessage("CubeConomy " + plugin.getDescription().getVersion());
-        sender.sendMessage("");
-        sender.sendMessage("  /money" + ChatColor.GOLD + " - " + ChatColor.YELLOW + "Check your balance.");
-        sender.sendMessage("  /money [name]" + ChatColor.GOLD + " - " + ChatColor.YELLOW + "Check others balance.");
-        sender.sendMessage("  /money top" + ChatColor.GOLD + " - " + ChatColor.YELLOW + "View top economical accounts.");
-        sender.sendMessage("  /money pay [name] [amount]" + ChatColor.GOLD + " - " + ChatColor.YELLOW + "Send money to others.");
+        sender.sendMessage(Component.empty());
+        sender.sendMessage(Component.text("CubeConomy " + plugin.getPluginMeta().getVersion()));
+        sender.sendMessage(Component.empty());
+        sender.sendMessage(helpLine("  /money", "Check your balance."));
+        sender.sendMessage(helpLine("  /money [name]", "Check others balance."));
+        sender.sendMessage(helpLine("  /money top", "View top economical accounts."));
+        sender.sendMessage(helpLine("  /money pay [name] [amount]", "Send money to others."));
         if (sender.hasPermission(Permissions.CUBECONOMY_ADMIN)) {
-            sender.sendMessage("  /money give [name] [amount]" + ChatColor.GOLD + " - " + ChatColor.YELLOW + "Give money.");
-            sender.sendMessage("  /money take [name] [amount]" + ChatColor.GOLD + " - " + ChatColor.YELLOW + "Take money.");
-            sender.sendMessage("  /money set [name] [amount]" + ChatColor.GOLD + " - " + ChatColor.YELLOW + "Set account balance.");
+            sender.sendMessage(helpLine("  /money give [name] [amount]", "Give money."));
+            sender.sendMessage(helpLine("  /money take [name] [amount]", "Take money."));
+            sender.sendMessage(helpLine("  /money set [name] [amount]", "Set account balance."));
         }
         return true;
+    }
+
+    private Component helpLine(String syntax, String description) {
+        return Component.text(syntax)
+                .append(Component.text(" - ", NamedTextColor.GOLD))
+                .append(Component.text(description, NamedTextColor.YELLOW));
     }
 
     @Override

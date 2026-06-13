@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
 import java.util.UUID;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 
 public class CubeConomyDatabase {
@@ -253,9 +254,9 @@ public class CubeConomyDatabase {
         this.connection.runCommands(new SQLRunnable<Void>() {
             @Override
             public Void execute(Connection connection, SQLConnection sqlConnection) throws SQLException {
-                sender.sendMessage("Starting import");
+                sender.sendMessage(Component.text("Starting import"));
                 if (!sqlConnection.hasTable(table)) {
-                    sender.sendMessage("Unknown table");
+                    sender.sendMessage(Component.text("Unknown table"));
                     return null;
                 }
                 HashMap<String, Double> amounts = new HashMap<>();
@@ -266,10 +267,10 @@ public class CubeConomyDatabase {
                 }
                 rs.close();
                 int s = amounts.size();
-                sender.sendMessage("Importing " + s + " UserIDs");
+                sender.sendMessage(Component.text("Importing " + s + " UserIDs"));
                 int count = 0;
                 Collection<CachedPlayer> res = uuidcache.getPlayers(amounts.keySet(), true);
-                sender.sendMessage("Found " + res.size() + " UserIDs");
+                sender.sendMessage(Component.text("Found " + res.size() + " UserIDs"));
 
                 for (CachedPlayer p : res) {
                     Double amount = amounts.remove(p.getName().toLowerCase());
@@ -282,19 +283,19 @@ public class CubeConomyDatabase {
                         count++;
                     }
                 }
-                sender.sendMessage("Failed accounts: " + amounts.size());
+                sender.sendMessage(Component.text("Failed accounts: " + amounts.size()));
                 try {
                     FileOutputStream fos = new FileOutputStream(failedAccountsFile);
                     PrintWriter w = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(fos), Charset.forName("utf-8")));
                     for (Entry<String, Double> e : amounts.entrySet()) {
-                        sender.sendMessage(e.getKey() + ": " + e.getValue());
+                        sender.sendMessage(Component.text(e.getKey() + ": " + e.getValue()));
                         w.println(e.getKey() + ": " + e.getValue());
                     }
                     w.close();
                 } catch (Exception e) {
-                    sender.sendMessage(e.getMessage());
+                    sender.sendMessage(Component.text(e.getMessage()));
                 }
-                sender.sendMessage("Successfully imported " + count + "/" + s + " accounts");
+                sender.sendMessage(Component.text("Successfully imported " + count + "/" + s + " accounts"));
                 return null;
             }
         });

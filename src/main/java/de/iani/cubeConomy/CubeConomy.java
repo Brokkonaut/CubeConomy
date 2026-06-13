@@ -24,7 +24,7 @@ import java.text.DecimalFormat;
 import java.util.UUID;
 import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
@@ -37,7 +37,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
     private DecimalFormat moneyFormat;
     private BungeeBroadcast broadcaster;
 
-    public static final String MESSAGE_PREFIX = ChatColor.DARK_GREEN + "[" + ChatColor.WHITE + "Money" + ChatColor.DARK_GREEN + "] ";
+    public static final Component MESSAGE_PREFIX = Messages.PREFIX;
 
     @Override
     public void onLoad() {
@@ -234,7 +234,7 @@ public class CubeConomy extends JavaPlugin implements CubeConomyAPI {
         }
     }
 
-    public void sendMessageTo(Player senderPlayer, UUID targetUUID, String message) {
+    public void sendMessageTo(Player senderPlayer, UUID targetUUID, Component message) {
         Player target = getServer().getPlayer(targetUUID);
         if (target != null) {
             target.sendMessage(message);

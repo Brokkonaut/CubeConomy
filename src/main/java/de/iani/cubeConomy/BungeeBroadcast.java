@@ -9,10 +9,18 @@ import java.util.Iterator;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.json.JSONComponentSerializer;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 public class BungeeBroadcast implements PluginMessageListener {
+    private static final short MESSAGE_TYPE = 1;
+    private static final short LEGACY_PAYLOAD_VERSION = 1;
+    private static final short COMPONENT_JSON_PAYLOAD_VERSION = 2;
+    private static final JSONComponentSerializer COMPONENT_SERIALIZER = JSONComponentSerializer.json();
+
     private CubeConomy plugin;
 
     public BungeeBroadcast(CubeConomy plugin) {
@@ -34,16 +42,22 @@ public class BungeeBroadcast implements PluginMessageListener {
                 DataInputStream msgin = new DataInputStream(new ByteArrayInputStream(msgbytes));
 
                 int type = msgin.readShort();
-                if (type == 1) {
-                    // int version =
-                    msgin.readShort();
+                if (type == MESSAGE_TYPE) {
+                    int version = msgin.readShort();
 
                     long msb = msgin.readLong();
                     long lsb = msgin.readLong();
                     UUID playerUUID = new UUID(msb, lsb);
                     Player target = plugin.getServer().getPlayer(playerUUID);
                     if (target != null) {
-                        String targetMessage = msgin.readUTF();
+                        Component targetMessage;
+                        if (version == LEGACY_PAYLOAD_VERSION) {
+                            targetMessage = LegacyComponentSerializer.legacySection().deserialize(msgin.readUTF());
+                        } else if (version == COMPONENT_JSON_PAYLOAD_VERSION) {
+                            targetMessage = COMPONENT_SERIALIZER.deserialize(msgin.readUTF());
+                        } else {
+                            return;
+                        }
                         target.sendMessage(targetMessage);
                     }
                 }
@@ -53,7 +67,7 @@ public class BungeeBroadcast implements PluginMessageListener {
         }
     }
 
-    public void sendMessage(Player sender, UUID target, String message) {
+    public void sendMessage(Player sender, UUID target, Component message) {
         if (sender == null) {
             Iterator<? extends Player> it = plugin.getServer().getOnlinePlayers().iterator();
             if (!it.hasNext()) {
@@ -67,12 +81,11 @@ public class BungeeBroadcast implements PluginMessageListener {
             ByteArrayOutputStream b2 = new ByteArrayOutputStream();
             DataOutputStream out2 = new DataOutputStream(b2);
 
-            out2.writeShort(1);// type
-            out2.writeShort(1);// version
-            // V1
+            out2.writeShort(MESSAGE_TYPE);
+            out2.writeShort(COMPONENT_JSON_PAYLOAD_VERSION);
             out2.writeLong(target.getMostSignificantBits());
             out2.writeLong(target.getLeastSignificantBits());
-            out2.writeUTF(message);
+            out2.writeUTF(COMPONENT_SERIALIZER.serialize(message));
 
             byte[] payload = b2.toByteArray();
 

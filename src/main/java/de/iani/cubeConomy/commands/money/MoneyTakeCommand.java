@@ -1,6 +1,7 @@
 package de.iani.cubeConomy.commands.money;
 
 import de.iani.cubeConomy.CubeConomy;
+import de.iani.cubeConomy.Messages;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.Permissions;
 import de.iani.cubeConomy.commands.ArgsParser;
@@ -8,7 +9,8 @@ import de.iani.cubeConomy.commands.SubCommand;
 import de.iani.cubeConomy.events.Cause;
 import de.iani.playerUUIDCache.CachedPlayer;
 import java.util.ArrayList;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -35,19 +37,19 @@ public class MoneyTakeCommand extends SubCommand {
         String name = args.getNext(null);
 
         if (!args.hasNext()) {
-            sender.sendMessage(commandString + getUsage());
+            sender.sendMessage(Component.text(commandString + getUsage()));
             return true;
         }
         double amount = args.getNext(0.0);
         if (Double.isInfinite(amount) || Double.isNaN(amount) || amount <= 0) {
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Invalid amount");
+            sender.sendMessage(Messages.error("Invalid amount"));
             return true;
         }
 
         CachedPlayer player = plugin.getPlayerUUIDCache().getPlayerFromNameOrUUID(name);
 
         if (player == null) {
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Unknown player");
+            sender.sendMessage(Messages.error("Unknown player"));
             return true;
         }
 
@@ -57,13 +59,20 @@ public class MoneyTakeCommand extends SubCommand {
             plugin.changeMoney(sender, player.getUUID(), -amount, Cause.TAKE_COMMAND, reason);
             plugin.getLogger().info(sender.getName() + " has taken " + plugin.formatMoney(amount) + " from " + player.getName() + (reason == null ? "" : " with reason \"" + reason + "\""));
 
-            String reasonMessage = reason == null ? "" : " for " + ChatColor.WHITE + reason + ChatColor.DARK_GREEN;
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + player.getName() + "'s account had " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.RED + " debited" + reasonMessage + ChatColor.RED + ".");
+            sender.sendMessage(Messages.prefixed(Component.text(player.getName() + "'s account had ", NamedTextColor.RED)
+                    .append(Component.text(plugin.formatMoney(amount), NamedTextColor.WHITE))
+                    .append(Component.text(" debited", NamedTextColor.RED))
+                    .append(Messages.reason(reason, NamedTextColor.RED))
+                    .append(Component.text(".", NamedTextColor.RED))));
             if (sender instanceof Player) {
-                plugin.sendMessageTo((Player) sender, player.getUUID(), CubeConomy.MESSAGE_PREFIX + ChatColor.WHITE + sender.getName() + ChatColor.DARK_GREEN + " has taken from you " + ChatColor.WHITE + plugin.formatMoney(amount) + ChatColor.DARK_GREEN + reasonMessage + ".");
+                plugin.sendMessageTo((Player) sender, player.getUUID(), Messages.prefixed(Component.text(sender.getName(), NamedTextColor.WHITE)
+                        .append(Component.text(" has taken from you ", NamedTextColor.DARK_GREEN))
+                        .append(Component.text(plugin.formatMoney(amount), NamedTextColor.WHITE))
+                        .append(Messages.reason(reason, NamedTextColor.DARK_GREEN))
+                        .append(Component.text(".", NamedTextColor.DARK_GREEN))));
             }
         } catch (MoneyDatabaseException e) {
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Database error: " + e.getMessage());
+            sender.sendMessage(Messages.error("Database error: " + e.getMessage()));
         }
         return true;
     }

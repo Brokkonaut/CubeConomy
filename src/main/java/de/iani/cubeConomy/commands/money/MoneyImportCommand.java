@@ -4,6 +4,7 @@ import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -34,7 +35,7 @@ public class MoneyImportCommand extends SubCommand {
         String name = args.getNext(null);
 
         if (name == null) {
-            sender.sendMessage(commandString + getUsage());
+            sender.sendMessage(Component.text(commandString + getUsage()));
             return true;
         }
 

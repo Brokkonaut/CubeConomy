@@ -2,12 +2,14 @@ package de.iani.cubeConomy.commands.money;
 
 import java.util.ArrayList;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import de.iani.cubeConomy.CubeConomy;
+import de.iani.cubeConomy.Messages;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
@@ -26,19 +28,21 @@ public class MoneyCommand extends SubCommand {
         CachedPlayer player = plugin.getPlayerUUIDCache().getPlayerFromNameOrUUID(name == null ? sender.getName() : name);
 
         if (player == null) {
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Unknown player");
+            sender.sendMessage(Messages.error("Unknown player"));
             return true;
         }
 
         try {
             double money = plugin.getMoney(player.getUUID());
             if (name == null) {
-                sender.sendMessage(CubeConomy.MESSAGE_PREFIX + "Balance: " + ChatColor.WHITE + plugin.formatMoney(money));
+                sender.sendMessage(Messages.prefixed(Component.text("Balance: ", NamedTextColor.DARK_GREEN)
+                        .append(Component.text(plugin.formatMoney(money), NamedTextColor.WHITE))));
             } else {
-                sender.sendMessage(CubeConomy.MESSAGE_PREFIX + player.getName() + "'s Balance: " + ChatColor.WHITE + plugin.formatMoney(money));
+                sender.sendMessage(Messages.prefixed(Component.text(player.getName() + "'s Balance: ", NamedTextColor.DARK_GREEN)
+                        .append(Component.text(plugin.formatMoney(money), NamedTextColor.WHITE))));
             }
         } catch (MoneyDatabaseException e) {
-            sender.sendMessage(CubeConomy.MESSAGE_PREFIX + ChatColor.RED + "Database error: " + e.getMessage());
+            sender.sendMessage(Messages.error("Database error: " + e.getMessage()));
         }
         return true;
     }
