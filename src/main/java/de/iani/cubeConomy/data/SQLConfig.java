@@ -2,8 +2,7 @@ package de.iani.cubeConomy.data;
 
 import org.bukkit.configuration.ConfigurationSection;
 
-public class SQLConfig
-{
+public class SQLConfig {
     private String host = "localhost";
 
     private String user = "CHANGETHIS";
@@ -14,10 +13,8 @@ public class SQLConfig
 
     private String tableprefix = "cubeconomy";
 
-    public SQLConfig(ConfigurationSection section)
-    {
-        if (section != null)
-        {
+    public SQLConfig(ConfigurationSection section) {
+        if (section != null) {
             host = section.getString("host", host);
             user = section.getString("user", user);
             password = section.getString("password", password);
@@ -26,28 +23,23 @@ public class SQLConfig
         }
     }
 
-    public String getHost()
-    {
+    public String getHost() {
         return host;
     }
 
-    public String getUser()
-    {
+    public String getUser() {
         return user;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public String getDatabase()
-    {
+    public String getDatabase() {
         return database;
     }
 
-    public String getTablePrefix()
-    {
+    public String getTablePrefix() {
         return tableprefix;
     }
 }

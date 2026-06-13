@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.BlockCommandSender;
@@ -20,7 +19,7 @@ import org.bukkit.entity.minecart.CommandMinecart;
 import org.bukkit.util.StringUtil;
 
 public class CommandRouter implements CommandExecutor, TabCompleter {
-    private class CommandMap {
+    private static class CommandMap {
         private String name;
 
         private CommandMap parent;
@@ -47,12 +46,12 @@ public class CommandRouter implements CommandExecutor, TabCompleter {
 
     public void addCommandMapping(SubCommand command, String... route) {
         CommandMap current = commands;
-        for (int i = 0; i < route.length; i++) {
+        for (String element : route) {
             if (current.subCommands == null) {
                 current.subCommands = new HashMap<>();
                 current.subcommandsOrdered = new ArrayList<>();
             }
-            String routePart = route[i].toLowerCase();
+            String routePart = element.toLowerCase();
             CommandMap part = current.subCommands.get(routePart);
             if (part == null) {
                 part = new CommandMap(current, routePart);

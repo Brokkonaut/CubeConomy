@@ -1,8 +1,7 @@
 package de.iani.cubeConomy.data;
 
-import org.bukkit.configuration.file.FileConfiguration;
-
 import de.iani.cubeConomy.CubeConomy;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class CubeConomyConfig {
     private CubeConomy plugin;

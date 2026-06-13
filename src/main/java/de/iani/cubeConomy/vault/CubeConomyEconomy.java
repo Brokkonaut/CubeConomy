@@ -1,17 +1,15 @@
 package de.iani.cubeConomy.vault;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.OfflinePlayer;
-
 import de.iani.cubeConomy.CubeConomyAPI;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.MoneyException;
+import java.util.Collections;
+import java.util.List;
+import java.util.UUID;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
+import org.bukkit.OfflinePlayer;
 
 public class CubeConomyEconomy implements Economy {
     private CubeConomyAPI cubeConomy;

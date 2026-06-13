@@ -1,19 +1,17 @@
 package de.iani.cubeConomy.commands.money;
 
-import java.util.ArrayList;
-
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import de.iani.cubeConomy.CubeConomy;
 import de.iani.cubeConomy.Messages;
 import de.iani.cubeConomy.MoneyDatabaseException;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
 import de.iani.playerUUIDCache.CachedPlayer;
+import java.util.ArrayList;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class MoneyCommand extends SubCommand {
     private CubeConomy plugin;

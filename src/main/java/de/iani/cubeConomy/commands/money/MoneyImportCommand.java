@@ -1,17 +1,15 @@
 package de.iani.cubeConomy.commands.money;
 
-import java.io.File;
-import java.sql.SQLException;
-import java.util.ArrayList;
-
-import net.kyori.adventure.text.Component;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-
 import de.iani.cubeConomy.CubeConomy;
 import de.iani.cubeConomy.Permissions;
 import de.iani.cubeConomy.commands.ArgsParser;
 import de.iani.cubeConomy.commands.SubCommand;
+import java.io.File;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import net.kyori.adventure.text.Component;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 
 public class MoneyImportCommand extends SubCommand {
     private CubeConomy plugin;
